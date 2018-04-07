@@ -1,0 +1,19 @@
+#! /usr/bin/env python
+
+import argparse
+
+from gaze import server
+
+
+parser = argparse.ArgumentParser('tool for viewing source files')
+
+parser.add_argument('root_dir', help='root directory to serve files from', nargs='?', default='.')
+parser.add_argument('-p', '--port', help='what port to run on', type=int, default=7070)
+
+def main() :
+    args = parser.parse_args()
+    server.run_server(args.root_dir, args.port)
+
+
+if __name__ == '__main__' :
+    main()
