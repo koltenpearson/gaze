@@ -16,7 +16,7 @@ class Gaze :
     def __init__(self, root_dir) :
         self.debug=True
 
-        self.root_dir = Path(root_dir)
+        self.root_dir = Path(root_dir).resolve()
 
         self.template = PageTemplate()
         self.template.add_title("Gaze")
