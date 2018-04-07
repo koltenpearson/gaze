@@ -12,7 +12,9 @@ setup(name="gaze",
         scripts=['bin/gaze'],
         include_package_data=True,
         install_requires=[
+            'pygments',
             'pygments-style-solarized',
+            'cherrypy',
         ]
         zip_safe=False)
 
