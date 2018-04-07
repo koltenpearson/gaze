@@ -11,5 +11,8 @@ setup(name="gaze",
         packages=['gaze'],
         scripts=['bin/gaze'],
         include_package_data=True,
+        install_requires=[
+            'pygments-style-solarized',
+        ]
         zip_safe=False)
 
