@@ -15,6 +15,6 @@ setup(name="gaze",
             'pygments',
             'pygments-style-solarized',
             'cherrypy',
-        ]
+        ],
         zip_safe=False)
 
