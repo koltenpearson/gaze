@@ -1,6 +1,6 @@
 import cherrypy
 import pkgutil
-from .build import PageTemplate, HTMLComponent
+from web_builder import PageTemplate, HTMLComponent
 from pathlib import Path
 import pygments
 from pygments import highlight
