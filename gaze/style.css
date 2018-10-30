@@ -96,3 +96,9 @@ a:hover {
     display : block;
 
 }
+
+.md-container {
+    margin-left : 10%;
+    margin-top : 2em;
+    margin-right : 15%;
+}

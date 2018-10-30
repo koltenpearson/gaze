@@ -15,6 +15,7 @@ setup(name="gaze",
             'pygments',
             'pygments-style-solarized',
             'cherrypy',
+            'mistletoe'
         ],
         zip_safe=False)
 

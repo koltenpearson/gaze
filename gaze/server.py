@@ -6,10 +6,19 @@ import pygments
 from pygments import highlight
 from pygments.formatters import HtmlFormatter
 from pygments.lexers import get_lexer_for_filename, guess_lexer
+import mistletoe
 
 #########################################################################
 ## server
 
+
+mathjax_conf = """
+MathJax.Hub.Config({
+    tex2jax : {
+        inlineMath : [ ['$', '$'] ]
+    }
+});
+"""
 
 class Gaze :
 
@@ -19,15 +28,30 @@ class Gaze :
         self.root_dir = Path(root_dir).resolve()
 
         self.template = PageTemplate()
-        self.template.add_title("Gaze")
+        self.template.set_title("Gaze")
         self.template.link_style('/style.css')
         self.template.link_script('/script.js')
+        try :
+            pkgutil.get_data(__name__, 'mathjax/MathJax.js')
+            self.template.link_script('/mathjax/MathJax.js?config=TeX-MML-AM_CHTML')
+
+        except FileNotFoundError :
+            self.template.link_script('https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML')
+
+        self.template.add_script(mathjax_conf, type='text/x-mathjax-config')
 
         self.style = pkgutil.get_data(__name__, 'style.css').decode('ascii')
         self.script = pkgutil.get_data(__name__, 'script.js').decode('ascii')
 
         self.formatter = HtmlFormatter(linenos=True, style='solarizeddark')
         self.template.add_style(self.formatter.get_style_defs('.highlight'))
+
+
+    @cherrypy.expose 
+    def mathjax(self, *pathargs, **kwargs) :
+        cherrypy.response.headers['Content-Type'] = 'text/javascript'
+        return pkgutil.get_data(__name__, '/'.join(('mathjax',) + pathargs))
+
 
 
     @cherrypy.expose
@@ -88,7 +112,28 @@ class Gaze :
         self.template.set_title(f'Gaze - {path.parts[-1]}')
         return self.template.render(result)
 
+
     def render_file(self, filepath) :
+        filename = filepath.parts[-1]
+        ext = filename.split('.')[-1]
+
+        if ext == 'md' :
+            return self.render_markdown(filepath)
+        else :
+            return self.render_pygments(filepath)
+
+
+    def render_markdown(self, filepath) :
+        result = HTMLComponent('body', _class='file-viewer')
+        with open(filepath) as infile :
+            contents = infile.read()
+
+        result.append(self.render_header(filepath))
+        result.child('div', _class='md-container').append(mistletoe.markdown(contents))
+
+        return self.template.render(result)
+
+    def render_pygments(self, filepath) :
 
         with open(filepath) as infile :
             contents = infile.read()
